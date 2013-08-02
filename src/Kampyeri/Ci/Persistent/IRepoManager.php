@@ -25,4 +25,14 @@ interface IRepoManager
      * @return bool
      */
     public function checkRepoUrl($url);
+
+    /**
+     * Gönderilen e-posta adreslerini repo ile ilişkilendirir. İşlem içerisinde, daha önceki ilişkili e-posta adresleri
+     * silindikten sonra yeni e-posta adresleri tanıtılır.
+     *
+     * @param Repo $repo Repo bilgilerini içeren sınıf.
+     * @param array $notificationEmails E-posta adreslerini içeren dizi.
+     * @return array Sonuç olarak eklenen RepoNotificationEmail objeleri dönülür.
+     */
+    public function setNotificationEmails(Repo $repo, array $notificationEmails);
 }

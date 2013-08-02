@@ -42,6 +42,7 @@ class Subversion
         $username = isset($optional['username']) ? $optional['username'] : null;
         $password = isset($optional['password']) ? $optional['password'] : null;
 
+
         // Opsiyonel olan kullanıcı adı anahtarı gelmişse boş olma durumunu kontrol et.
         if ($username !== null && !trim($username)) {
             throw new Exception('Username is empty!', 3, 400);
@@ -79,5 +80,26 @@ class Subversion
         $this->getRepoManager()->insert($repo);
 
         return $repo;
+    }
+
+    /**
+     * @param Repo $repo
+     * @param array $notificationEmails
+     * @return array
+     * @throws \Kampyeri\Ci\Exception
+     */
+    public function setNotificationEmails(Repo $repo, array $notificationEmails)
+    {
+        $notificationEmails = array_unique($notificationEmails);
+
+        // Opsiyonel olan bildiri e-posta adresleri kontrol ediliyor.
+        foreach ($notificationEmails as $email) {
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                throw new Exception('Notification email is not valid!', 4, 400);
+            }
+        }
+
+        // E-posta adreslerini ilişkilendir.
+        return $this->getRepoManager()->setNotificationEmails($repo, $notificationEmails);
     }
 }
