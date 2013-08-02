@@ -28,14 +28,23 @@ class Subversion
 
     /**
      * @param $url
-     * @return Repo
+     * @param array $optional
+     * @return object
      * @throws \Kampyeri\Ci\Exception
      */
-    public function create($url)
+    public function validateCreateParams($url, array $optional = array())
     {
         // Bağlantı geçerliliği kontrolü
         if (!filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
             throw new Exception('Url is not valid!', 1, 400);
+        }
+
+        $username = isset($optional['username']) ? $optional['username'] : null;
+        $password = isset($optional['password']) ? $optional['password'] : null;
+
+        // Opsiyonel olan kullanıcı adı anahtarı gelmişse boş olma durumunu kontrol et.
+        if ($username !== null && !trim($username)) {
+            throw new Exception('Username is empty!', 3, 400);
         }
 
         // Bağlantının varlığı kontrol ediliyor.
@@ -43,10 +52,28 @@ class Subversion
             throw new Exception('Repository is already added.', 2, 403);
         }
 
+        return (object)array(
+            'url' => $url,
+            'username' => $username,
+            'password' => $password
+        );
+    }
+
+    /**
+     * @param $url
+     * @param array $optional
+     * @return Repo
+     */
+    public function create($url, array $optional = array())
+    {
+        $validParams = $this->validateCreateParams($url, $optional);
+
         // Bilgileri sınıfa aktar.
         $repo = new Repo();
-        $repo->url = $url;
+        $repo->url = $validParams->url;
         $repo->repo_type = 'subversion';
+        $repo->username = $validParams->username;
+        $repo->password = $validParams->password;
 
         // Sınıfı kaydet.
         $this->getRepoManager()->insert($repo);

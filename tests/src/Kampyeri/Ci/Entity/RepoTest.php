@@ -10,5 +10,7 @@ class RepoTest extends \PHPUnit_Framework_TestCase
         $this->assertObjectHasAttribute('id', $entity);
         $this->assertObjectHasAttribute('url', $entity);
         $this->assertObjectHasAttribute('repo_type', $entity);
+        $this->assertObjectHasAttribute('username', $entity);
+        $this->assertObjectHasAttribute('password', $entity);
     }
 }

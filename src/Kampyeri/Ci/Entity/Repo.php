@@ -18,4 +18,14 @@ class Repo
      * @var string
      */
     public $repo_type;
+
+    /**
+     * @var string
+     */
+    public $username = null;
+
+    /**
+     * @var string
+     */
+    public $password = null;
 }
